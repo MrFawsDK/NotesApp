@@ -123,9 +123,9 @@ public class NotesApp {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 0, 5, 0);
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE; // Lad felterne beholde deres naturlige størrelse
+        gbc.insets = new Insets(10, 20, 10, 20); // Mere padding rundt om
+        gbc.anchor = GridBagConstraints.CENTER;
         
         // Password felt container
         JPanel passwordContainer = createInputContainer("🔑 Master Password");
@@ -137,7 +137,7 @@ public class NotesApp {
         JPasswordField confirmField = null;
         if (isNewUser) {
             gbc.gridy = 1;
-            gbc.insets = new Insets(25, 0, 5, 0); // Mere plads mellem felterne
+            gbc.insets = new Insets(15, 20, 10, 20); // Konsistent padding
             
             JPanel confirmContainer = createInputContainer("🔒 Bekræft Master Password");
             confirmField = createStyledPasswordField();
@@ -146,8 +146,8 @@ public class NotesApp {
             
             // Tilføj hjælpetekst
             gbc.gridy = 2;
-            gbc.insets = new Insets(10, 0, 0, 0);
-            JLabel helpLabel = new JLabel("<html><div style='text-align: center; color: #6c757d; font-size: 11px;'>Indtast samme password i begge felter</div></html>");
+            gbc.insets = new Insets(5, 20, 10, 20);
+            JLabel helpLabel = new JLabel("<html><div style='text-align: center; color: #6c757d; font-size: 12px;'><i>💡 Indtast samme password i begge felter</i></div></html>");
             helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
             formPanel.add(helpLabel, gbc);
         }
@@ -311,14 +311,18 @@ public class NotesApp {
      * Opretter en flot container til input felter med label
      */
     private JPanel createInputContainer(String labelText) {
-        JPanel container = new JPanel(new BorderLayout(10, 5));
+        JPanel container = new JPanel(new BorderLayout(0, 8));
         container.setOpaque(false);
-        container.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        container.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
+        container.setPreferredSize(new Dimension(450, 80)); // Fast størrelse
+        container.setMinimumSize(new Dimension(450, 80));
+        container.setMaximumSize(new Dimension(450, 80));
         
         // Label med ikon
         JLabel label = new JLabel(labelText);
         label.setFont(new Font("Segoe UI", Font.BOLD, 15));
         label.setForeground(new Color(52, 58, 64));
+        label.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
         container.add(label, BorderLayout.NORTH);
         
         return container;
@@ -364,7 +368,9 @@ public class NotesApp {
         };
         
         field.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        field.setPreferredSize(new Dimension(350, 45));
+        field.setPreferredSize(new Dimension(440, 45)); // Bredere felt
+        field.setMinimumSize(new Dimension(440, 45));
+        field.setMaximumSize(new Dimension(440, 45));
         field.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
         field.setBackground(Color.WHITE);
         field.setForeground(new Color(33, 37, 41));
