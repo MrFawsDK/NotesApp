@@ -45,7 +45,7 @@ public class NotesApp {
      * Viser password dialog til autentifikation eller oprettelse
      */
     private void showPasswordDialog(boolean isNewUser) {
-        JDialog passwordDialog = new JDialog((Frame) null, "🔒 Krypteret Notes App", true);
+        JDialog passwordDialog = new JDialog((Frame) null, "Krypteret Notes App", true);
         passwordDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         passwordDialog.setSize(650, isNewUser ? 550 : 400);
         passwordDialog.setLocationRelativeTo(null);
@@ -88,8 +88,8 @@ public class NotesApp {
         };
         iconWrapper.setPreferredSize(new Dimension(70, 70));
         
-        JLabel iconLabel = new JLabel("🔐", SwingConstants.CENTER);
-        iconLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 28));
+        JLabel iconLabel = new JLabel("LOCK", SwingConstants.CENTER);
+        iconLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
         iconLabel.setBounds(0, 0, 70, 70);
         iconWrapper.add(iconLabel);
         
@@ -128,7 +128,7 @@ public class NotesApp {
         gbc.anchor = GridBagConstraints.CENTER;
         
         // Password felt container
-        JPanel passwordContainer = createInputContainer("🔑 Master Password");
+        JPanel passwordContainer = createInputContainer("Master Password");
         JPasswordField passwordField = createStyledPasswordField();
         passwordContainer.add(passwordField, BorderLayout.CENTER);
         formPanel.add(passwordContainer, gbc);
@@ -139,7 +139,7 @@ public class NotesApp {
             gbc.gridy = 1;
             gbc.insets = new Insets(15, 20, 10, 20); // Konsistent padding
             
-            JPanel confirmContainer = createInputContainer("🔒 Bekræft Master Password");
+            JPanel confirmContainer = createInputContainer("Bekræft Master Password");
             confirmField = createStyledPasswordField();
             confirmContainer.add(confirmField, BorderLayout.CENTER);
             formPanel.add(confirmContainer, gbc);
@@ -147,7 +147,7 @@ public class NotesApp {
             // Tilføj hjælpetekst
             gbc.gridy = 2;
             gbc.insets = new Insets(5, 20, 10, 20);
-            JLabel helpLabel = new JLabel("<html><div style='text-align: center; color: #6c757d; font-size: 12px;'><i>💡 Indtast samme password i begge felter</i></div></html>");
+            JLabel helpLabel = new JLabel("<html><div style='text-align: center; color: #6c757d; font-size: 12px;'><i>Indtast samme password i begge felter</i></div></html>");
             helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
             formPanel.add(helpLabel, gbc);
         }
@@ -160,7 +160,7 @@ public class NotesApp {
         
         // Opret/Login knap - meget synlig
         JButton okButton = createStyledButton(
-            isNewUser ? "🔒 Opret Password" : "🔓 Log Ind", 
+            isNewUser ? "Opret Password" : "Log Ind", 
             new Color(40, 167, 69), // Grøn baggrund
             Color.WHITE,
             true
@@ -168,7 +168,7 @@ public class NotesApp {
         
         // Annuller knap - synlig men sekundær
         JButton cancelButton = createStyledButton(
-            "❌ Annuller",
+            "Annuller",
             new Color(220, 53, 69), // Rød baggrund  
             Color.WHITE,
             false
