@@ -47,115 +47,132 @@ public class NotesApp {
     private void showPasswordDialog(boolean isNewUser) {
         JDialog passwordDialog = new JDialog((Frame) null, "🔒 Krypteret Notes App", true);
         passwordDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        passwordDialog.setSize(500, isNewUser ? 350 : 280);
+        passwordDialog.setSize(650, isNewUser ? 550 : 400);
         passwordDialog.setLocationRelativeTo(null);
         passwordDialog.setResizable(false);
         
-        // Hovedpanel med padding
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        mainPanel.setBackground(new Color(248, 249, 250));
+        // Hovedpanel med gradient baggrund
+        JPanel mainPanel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                GradientPaint gradient = new GradientPaint(0, 0, new Color(240, 242, 247), 
+                                                          0, getHeight(), new Color(255, 255, 255));
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
         
         // Top panel med ikon og titel
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setBackground(new Color(248, 249, 250));
+        topPanel.setOpaque(false);
         
-        // Sikkerhedsikon
+        // Sikkerhedsikon med cirkel baggrund
+        JPanel iconPanel = new JPanel(new FlowLayout());
+        iconPanel.setOpaque(false);
+        JLabel iconWrapper = new JLabel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(new Color(0, 123, 255, 30));
+                g2d.fillOval(5, 5, 60, 60);
+                g2d.setColor(new Color(0, 123, 255));
+                g2d.setStroke(new BasicStroke(2));
+                g2d.drawOval(5, 5, 60, 60);
+            }
+        };
+        iconWrapper.setPreferredSize(new Dimension(70, 70));
+        
         JLabel iconLabel = new JLabel("🔐", SwingConstants.CENTER);
-        iconLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 32));
-        iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
-        topPanel.add(iconLabel, BorderLayout.NORTH);
+        iconLabel.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 28));
+        iconLabel.setBounds(0, 0, 70, 70);
+        iconWrapper.add(iconLabel);
+        
+        iconPanel.add(iconWrapper);
+        topPanel.add(iconPanel, BorderLayout.NORTH);
         
         // Titel
         String titleText = isNewUser ? "Opret Master Password" : "Velkommen Tilbage";
         JLabel titleLabel = new JLabel(titleText, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         titleLabel.setForeground(new Color(33, 37, 41));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
         topPanel.add(titleLabel, BorderLayout.CENTER);
         
         // Beskrivelse
         String descText = isNewUser ? 
-            "<html><div style='text-align: center; line-height: 1.4;'>Vælg et stærkt password til at kryptere dine noter.<br><span style='color: #6c757d; font-size: 12px;'>Minimum 6 tegn. Husk det godt - det kan ikke gendannes!</span></div></html>" :
-            "<html><div style='text-align: center; color: #6c757d;'>Indtast dit master password for at få adgang til dine krypterede noter</div></html>";
+            "<html><div style='text-align: center; line-height: 1.6; font-size: 14px;'>Vælg et stærkt password til at kryptere dine noter<br><span style='color: #dc3545; font-weight: bold;'>⚠️ Minimum 6 tegn - Kan IKKE gendannes!</span></div></html>" :
+            "<html><div style='text-align: center; color: #6c757d; font-size: 14px;'>Indtast dit master password for at få adgang til dine krypterede noter</div></html>";
         JLabel descLabel = new JLabel(descText, SwingConstants.CENTER);
-        descLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        descLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        descLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        descLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 25, 0));
         topPanel.add(descLabel, BorderLayout.SOUTH);
         
         mainPanel.add(topPanel, BorderLayout.NORTH);
         
-        // Center panel med form felter
+        // Center panel med moderne form felter
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(Color.WHITE);
-        formPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(222, 226, 230), 1),
-            BorderFactory.createEmptyBorder(25, 25, 25, 25)
-        ));
+        formPanel.setOpaque(false);
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 5, 8, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 0, 5, 0);
         gbc.anchor = GridBagConstraints.WEST;
         
-        // Password felt
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        passwordLabel.setForeground(new Color(33, 37, 41));
-        JPasswordField passwordField = new JPasswordField(22);
-        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        passwordField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(206, 212, 218), 1),
-            BorderFactory.createEmptyBorder(8, 12, 8, 12)
-        ));
+        // Password felt container
+        JPanel passwordContainer = createInputContainer("🔑 Master Password");
+        JPasswordField passwordField = createStyledPasswordField();
+        passwordContainer.add(passwordField, BorderLayout.CENTER);
+        formPanel.add(passwordContainer, gbc);
         
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; gbc.fill = GridBagConstraints.HORIZONTAL;
-        formPanel.add(passwordLabel, gbc);
-        gbc.gridy = 1;
-        formPanel.add(passwordField, gbc);
-        
-        // Bekræft password felt (kun for nye brugere)
-        JLabel confirmLabel = null;
+        // Bekræft password felt (ALTID for nye brugere - meget synligt)
         JPasswordField confirmField = null;
         if (isNewUser) {
-            confirmLabel = new JLabel("Bekræft Password:");
-            confirmLabel.setFont(new Font("Segoe UI", Font.BOLD, 13));
-            confirmLabel.setForeground(new Color(33, 37, 41));
-            confirmField = new JPasswordField(22);
-            confirmField.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-            confirmField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(206, 212, 218), 1),
-                BorderFactory.createEmptyBorder(8, 12, 8, 12)
-            ));
+            gbc.gridy = 1;
+            gbc.insets = new Insets(25, 0, 5, 0); // Mere plads mellem felterne
             
-            gbc.gridy = 2; gbc.insets = new Insets(15, 5, 8, 5);
-            formPanel.add(confirmLabel, gbc);
-            gbc.gridy = 3; gbc.insets = new Insets(8, 5, 8, 5);
-            formPanel.add(confirmField, gbc);
+            JPanel confirmContainer = createInputContainer("🔒 Bekræft Master Password");
+            confirmField = createStyledPasswordField();
+            confirmContainer.add(confirmField, BorderLayout.CENTER);
+            formPanel.add(confirmContainer, gbc);
+            
+            // Tilføj hjælpetekst
+            gbc.gridy = 2;
+            gbc.insets = new Insets(10, 0, 0, 0);
+            JLabel helpLabel = new JLabel("<html><div style='text-align: center; color: #6c757d; font-size: 11px;'>Indtast samme password i begge felter</div></html>");
+            helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            formPanel.add(helpLabel, gbc);
         }
         
         mainPanel.add(formPanel, BorderLayout.CENTER);
         
-        // Bottom panel med knapper
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
-        bottomPanel.setBackground(new Color(248, 249, 250));
+        // Bottom panel med synlige knapper
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        bottomPanel.setOpaque(false);
         
-        JButton okButton = new JButton(isNewUser ? "🔒 Opret Password" : "🔓 Log Ind");
-        okButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        okButton.setForeground(Color.WHITE);
-        okButton.setBackground(new Color(0, 123, 255));
-        okButton.setBorder(BorderFactory.createEmptyBorder(12, 25, 12, 25));
-        okButton.setFocusPainted(false);
-        okButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        // Opret/Login knap - meget synlig
+        JButton okButton = createStyledButton(
+            isNewUser ? "🔒 Opret Password" : "🔓 Log Ind", 
+            new Color(40, 167, 69), // Grøn baggrund
+            Color.WHITE,
+            true
+        );
         
-        JButton cancelButton = new JButton("❌ Annuller");
-        cancelButton.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        cancelButton.setForeground(new Color(108, 117, 125));
-        cancelButton.setBackground(new Color(248, 249, 250));
-        cancelButton.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(206, 212, 218), 1),
-            BorderFactory.createEmptyBorder(12, 25, 12, 25)
-        ));
-        cancelButton.setFocusPainted(false);
-        cancelButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        // Annuller knap - synlig men sekundær
+        JButton cancelButton = createStyledButton(
+            "❌ Annuller",
+            new Color(220, 53, 69), // Rød baggrund  
+            Color.WHITE,
+            false
+        );
         
         bottomPanel.add(okButton);
         bottomPanel.add(cancelButton);
@@ -288,5 +305,157 @@ public class NotesApp {
             NotesAppGUI mainWindow = new NotesAppGUI(cryptoManager, notesStorage);
             mainWindow.setVisible(true);
         });
+    }
+    
+    /**
+     * Opretter en flot container til input felter med label
+     */
+    private JPanel createInputContainer(String labelText) {
+        JPanel container = new JPanel(new BorderLayout(10, 5));
+        container.setOpaque(false);
+        container.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Label med ikon
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        label.setForeground(new Color(52, 58, 64));
+        container.add(label, BorderLayout.NORTH);
+        
+        return container;
+    }
+    
+    /**
+     * Opretter et flot stylet password felt
+     */
+    private JPasswordField createStyledPasswordField() {
+        JPasswordField field = new JPasswordField(25) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Baggrund
+                g2d.setColor(Color.WHITE);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+                
+                // Border
+                if (hasFocus()) {
+                    g2d.setColor(new Color(0, 123, 255));
+                    g2d.setStroke(new BasicStroke(2));
+                } else {
+                    g2d.setColor(new Color(206, 212, 218));
+                    g2d.setStroke(new BasicStroke(1));
+                }
+                g2d.drawRoundRect(0, 0, getWidth()-1, getHeight()-1, 8, 8);
+                
+                // Skygge effekt
+                if (!hasFocus()) {
+                    g2d.setColor(new Color(0, 0, 0, 10));
+                    g2d.fillRoundRect(1, 2, getWidth()-2, getHeight()-2, 8, 8);
+                }
+                
+                super.paintComponent(g);
+            }
+            
+            @Override
+            protected void paintBorder(Graphics g) {
+                // Ingen standard border - vi tegner vores egen
+            }
+        };
+        
+        field.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        field.setPreferredSize(new Dimension(350, 45));
+        field.setBorder(BorderFactory.createEmptyBorder(12, 16, 12, 16));
+        field.setBackground(Color.WHITE);
+        field.setForeground(new Color(33, 37, 41));
+        field.setCaretColor(new Color(0, 123, 255));
+        field.setOpaque(false);
+        
+        // Focus listener til repaint ved focus ændring
+        field.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent e) {
+                field.repaint();
+            }
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                field.repaint();
+            }
+        });
+        
+        return field;
+    }
+    
+    /**
+     * Opretter en flot stylet knap med hover effekter
+     */
+    private JButton createStyledButton(String text, Color bgColor, Color textColor, boolean isPrimary) {
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Baggrund med gradient
+                Color startColor = getBackground();
+                Color endColor = getBackground().darker();
+                GradientPaint gradient = new GradientPaint(0, 0, startColor, 0, getHeight(), endColor);
+                g2d.setPaint(gradient);
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+                
+                // Tekst
+                g2d.setColor(getForeground());
+                g2d.setFont(getFont());
+                FontMetrics fm = g2d.getFontMetrics();
+                int textX = (getWidth() - fm.stringWidth(getText())) / 2;
+                int textY = ((getHeight() - fm.getHeight()) / 2) + fm.getAscent();
+                g2d.drawString(getText(), textX, textY);
+                
+                // Skygge/border
+                if (isPrimary && hasFocus()) {
+                    g2d.setColor(new Color(255, 255, 255, 100));
+                    g2d.setStroke(new BasicStroke(2));
+                    g2d.drawRoundRect(1, 1, getWidth()-3, getHeight()-3, 12, 12);
+                }
+            }
+        };
+        
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setForeground(textColor);
+        button.setBackground(bgColor);
+        button.setPreferredSize(new Dimension(160, 45));
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setContentAreaFilled(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        // Hover effekter
+        Color originalBg = bgColor;
+        Color hoverBg = isPrimary ? bgColor.brighter() : bgColor.darker();
+        
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                button.setBackground(hoverBg);
+                button.repaint();
+            }
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                button.setBackground(originalBg);
+                button.repaint();
+            }
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                button.setBackground(originalBg.darker());
+                button.repaint();
+            }
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                button.setBackground(hoverBg);
+                button.repaint();
+            }
+        });
+        
+        return button;
     }
 }
