@@ -88,6 +88,20 @@ public class Note implements Serializable {
     }
     
     /**
+     * Returnerer formateret dato (alias for getFormattedLastModified)
+     */
+    public String getFormattedDate() {
+        return getFormattedLastModified();
+    }
+    
+    /**
+     * Opdaterer modified date (alias for updateLastModified)
+     */
+    public void updateModifiedDate() {
+        updateLastModified();
+    }
+    
+    /**
      * Returnerer et kort preview af noteens indhold (første 100 tegn)
      */
     public String getContentPreview() {
