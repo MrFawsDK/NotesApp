@@ -88,8 +88,8 @@ public class NotesApp {
         };
         iconWrapper.setPreferredSize(new Dimension(70, 70));
         
-        JLabel iconLabel = new JLabel("LOCK", SwingConstants.CENTER);
-        iconLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        JLabel iconLabel = new JLabel("[*]", SwingConstants.CENTER);
+        iconLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         iconLabel.setBounds(0, 0, 70, 70);
         iconWrapper.add(iconLabel);
         
@@ -115,43 +115,83 @@ public class NotesApp {
         
         mainPanel.add(topPanel, BorderLayout.NORTH);
         
-        // Center panel med moderne form felter
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setOpaque(false);
-        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        // Center panel med form felter - MEGET synlige
+        JPanel formPanel = new JPanel(new BorderLayout());
+        formPanel.setOpaque(true);
+        formPanel.setBackground(new Color(248, 249, 250));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
         
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.NONE; // Lad felterne beholde deres naturlige størrelse
-        gbc.insets = new Insets(10, 20, 10, 20); // Mere padding rundt om
-        gbc.anchor = GridBagConstraints.CENTER;
+        // Container for password felter
+        JPanel fieldsContainer = new JPanel();
+        fieldsContainer.setLayout(new BoxLayout(fieldsContainer, BoxLayout.Y_AXIS));
+        fieldsContainer.setOpaque(true);
+        fieldsContainer.setBackground(Color.WHITE);
+        fieldsContainer.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(206, 212, 218), 1),
+            BorderFactory.createEmptyBorder(25, 25, 25, 25)
+        ));
         
-        // Password felt container
-        JPanel passwordContainer = createInputContainer("Master Password");
-        JPasswordField passwordField = createStyledPasswordField();
-        passwordContainer.add(passwordField, BorderLayout.CENTER);
-        formPanel.add(passwordContainer, gbc);
+        // FØRSTE password felt - ALTID synlig for alle brugere  
+        JLabel password1Label = new JLabel(isNewUser ? "Vælg Master Password:" : "Indtast dit Master Password:");
+        password1Label.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        password1Label.setForeground(new Color(33, 37, 41));
+        password1Label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fieldsContainer.add(password1Label);
         
-        // Bekræft password felt (ALTID for nye brugere - meget synligt)
+        fieldsContainer.add(Box.createVerticalStrut(12));
+        
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        passwordField.setPreferredSize(new Dimension(350, 50));
+        passwordField.setMaximumSize(new Dimension(350, 50));
+        passwordField.setMinimumSize(new Dimension(350, 50));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(0, 123, 255), 3),
+            BorderFactory.createEmptyBorder(12, 16, 12, 16)
+        ));
+        passwordField.setBackground(Color.WHITE);
+        passwordField.setForeground(new Color(33, 37, 41));
+        passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fieldsContainer.add(passwordField);
+        
+        // ANDET password felt - kun for nye brugere
         JPasswordField confirmField = null;
         if (isNewUser) {
-            gbc.gridy = 1;
-            gbc.insets = new Insets(15, 20, 10, 20); // Konsistent padding
+            fieldsContainer.add(Box.createVerticalStrut(25));
             
-            JPanel confirmContainer = createInputContainer("Bekræft Master Password");
-            confirmField = createStyledPasswordField();
-            confirmContainer.add(confirmField, BorderLayout.CENTER);
-            formPanel.add(confirmContainer, gbc);
+            JLabel password2Label = new JLabel("Bekræft Master Password:");
+            password2Label.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            password2Label.setForeground(new Color(33, 37, 41));
+            password2Label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            fieldsContainer.add(password2Label);
             
-            // Tilføj hjælpetekst
-            gbc.gridy = 2;
-            gbc.insets = new Insets(5, 20, 10, 20);
-            JLabel helpLabel = new JLabel("<html><div style='text-align: center; color: #6c757d; font-size: 12px;'><i>Indtast samme password i begge felter</i></div></html>");
-            helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            formPanel.add(helpLabel, gbc);
+            fieldsContainer.add(Box.createVerticalStrut(12));
+            
+            confirmField = new JPasswordField(20);
+            confirmField.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            confirmField.setPreferredSize(new Dimension(350, 50));
+            confirmField.setMaximumSize(new Dimension(350, 50));
+            confirmField.setMinimumSize(new Dimension(350, 50));
+            confirmField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0, 123, 255), 3),
+                BorderFactory.createEmptyBorder(12, 16, 12, 16)
+            ));
+            confirmField.setBackground(Color.WHITE);
+            confirmField.setForeground(new Color(33, 37, 41));
+            confirmField.setAlignmentX(Component.CENTER_ALIGNMENT);
+            fieldsContainer.add(confirmField);
+            
+            fieldsContainer.add(Box.createVerticalStrut(15));
+            
+            JLabel helpLabel = new JLabel("Indtast samme password i begge felter");
+            helpLabel.setFont(new Font("Segoe UI", Font.BOLD, 12));
+            helpLabel.setForeground(new Color(220, 53, 69));
+            helpLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            fieldsContainer.add(helpLabel);
         }
         
+        // Tilføj felterne til formPanel og formPanel til mainPanel
+        formPanel.add(fieldsContainer, BorderLayout.CENTER);
         mainPanel.add(formPanel, BorderLayout.CENTER);
         
         // Bottom panel med synlige knapper
