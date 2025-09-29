@@ -18,16 +18,16 @@ public class NotesAppGUI extends JFrame {
     private final NotesStorage notesStorage;
     private List<Note> notes;
     
-    // Dark Theme Farver
+    // Dark Theme Farver - Opdaterede for bedre synlighed
     private static final Color DARK_BACKGROUND = new Color(32, 33, 36);
     private static final Color DARKER_BACKGROUND = new Color(24, 25, 26);
     private static final Color SIDEBAR_BACKGROUND = new Color(41, 42, 45);
-    private static final Color TEXT_PRIMARY = new Color(232, 234, 237);
-    private static final Color TEXT_SECONDARY = new Color(154, 160, 166);
-    private static final Color ACCENT_BLUE = new Color(66, 133, 244);
-    private static final Color ACCENT_GREEN = new Color(52, 168, 83);
-    private static final Color ACCENT_RED = new Color(234, 67, 53);
-    private static final Color BUTTON_HOVER = new Color(60, 64, 67);
+    private static final Color TEXT_PRIMARY = new Color(255, 255, 255); // Helt hvid for bedre læsbarhed
+    private static final Color TEXT_SECONDARY = new Color(180, 185, 190); // Lysere grå
+    private static final Color ACCENT_BLUE = new Color(100, 150, 255); // Lysere blå
+    private static final Color ACCENT_GREEN = new Color(80, 200, 120); // Lysere grøn
+    private static final Color ACCENT_RED = new Color(255, 90, 90); // Lysere rød
+    private static final Color BUTTON_HOVER = new Color(70, 75, 80);
     private static final Color INPUT_BACKGROUND = new Color(48, 49, 52);
     private static final Color BORDER_COLOR = new Color(95, 99, 104);
     
@@ -331,27 +331,55 @@ public class NotesAppGUI extends JFrame {
     }
     
     /**
-     * Opretter styled button med moderne design
+     * Opretter styled button med moderne design - TVUNGET FARVESYSTEM
      */
     private JButton createStyledButton(String text, Color backgroundColor) {
-        JButton button = new JButton(text);
+        JButton button = new JButton(text) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g.create();
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Tving baggrundsfarverne til at vise sig!
+                g2d.setColor(getBackground());
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 8, 8);
+                
+                // Tegnr tekst med tvunget farve
+                g2d.setColor(getForeground());
+                g2d.setFont(getFont());
+                FontMetrics fm = g2d.getFontMetrics();
+                int x = (getWidth() - fm.stringWidth(getText())) / 2;
+                int y = (getHeight() + fm.getAscent() - fm.getDescent()) / 2;
+                g2d.drawString(getText(), x, y);
+                
+                g2d.dispose();
+            }
+        };
+        
+        // Sæt farver
         button.setBackground(backgroundColor);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        button.setBorder(new EmptyBorder(8, 15, 8, 15));
+        button.setForeground(Color.WHITE); // Altid hvid tekst
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setPreferredSize(new Dimension(120, 40));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         button.setFocusPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setOpaque(false); // Vigtigt for custom painting
+        button.setContentAreaFilled(false); // Slå standard baggrund fra
         
-        // Hover effect
+        // Hover effect med custom painting
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 if (button.isEnabled()) {
-                    button.setBackground(backgroundColor.darker());
+                    Color hoverColor = backgroundColor.brighter();
+                    button.setBackground(hoverColor);
+                    button.repaint();
                 }
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 if (button.isEnabled()) {
                     button.setBackground(backgroundColor);
+                    button.repaint();
                 }
             }
         });
