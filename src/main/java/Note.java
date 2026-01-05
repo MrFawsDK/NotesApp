@@ -13,6 +13,8 @@ public class Note implements Serializable {
     private String id;
     private String title;
     private String content;
+    private String category;
+    private boolean isFavorite;
     private LocalDateTime createdAt;
     private LocalDateTime lastModified;
     
@@ -23,17 +25,21 @@ public class Note implements Serializable {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.content = content;
+        this.category = "Generel";
+        this.isFavorite = false;
         this.createdAt = LocalDateTime.now();
         this.lastModified = LocalDateTime.now();
     }
     
     /**
-     * Konstruktør til at genskabe eksisterende noter (fx fra fil)
+     * Konstruktør til at genskabe eksisterende noter (fx fra fil) - bagudkompatibel
      */
     public Note(String id, String title, String content, LocalDateTime createdAt, LocalDateTime lastModified) {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.category = "Generel"; // Standard kategori for gamle noter
+        this.isFavorite = false;
         this.createdAt = createdAt;
         this.lastModified = lastModified;
     }
@@ -71,6 +77,24 @@ public class Note implements Serializable {
     
     public void updateLastModified() {
         this.lastModified = LocalDateTime.now();
+    }
+    
+    public String getCategory() {
+        return category;
+    }
+    
+    public void setCategory(String category) {
+        this.category = category;
+        updateLastModified();
+    }
+    
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+    
+    public void setFavorite(boolean favorite) {
+        this.isFavorite = favorite;
+        updateLastModified();
     }
     
     /**
@@ -113,6 +137,31 @@ public class Note implements Serializable {
             preview = preview.substring(0, 97) + "...";
         }
         return preview;
+    }
+    
+    /**
+     * Tæller antal ord i noten
+     */
+    public int getWordCount() {
+        if (content == null || content.trim().isEmpty()) {
+            return 0;
+        }
+        String[] words = content.trim().split("\\s+");
+        return words.length;
+    }
+    
+    /**
+     * Tæller antal tegn i noten
+     */
+    public int getCharacterCount() {
+        return content == null ? 0 : content.length();
+    }
+    
+    /**
+     * Returnerer statistik som streng
+     */
+    public String getStats() {
+        return String.format("%d ord, %d tegn", getWordCount(), getCharacterCount());
     }
     
     @Override

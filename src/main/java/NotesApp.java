@@ -4,7 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * NotesApp er hovedklassen for den krypterede notes applikation
+ * NotesApp er ho        JLabel passwordLabel = new JLabel(isNewUser ? "[KEY] Vaelg dit sikre password:" : "[KEY] Dit password:");
+        passwordLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        passwordLabel.setForeground(Color.WHITE);klassen for den krypterede notes applikation
  * Håndterer password autentifikation og starter GUI
  */
 public class NotesApp {
@@ -45,47 +47,81 @@ public class NotesApp {
      * Viser password dialog til autentifikation eller oprettelse - SIMPEL VERSION
      */
     private void showPasswordDialog(boolean isNewUser) {
-        JDialog passwordDialog = new JDialog((Frame) null, "Krypteret Notes App", true);
+        JDialog passwordDialog = new JDialog((Frame) null, "🌟 Krypteret Notes App", true);
         passwordDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        passwordDialog.setSize(500, isNewUser ? 400 : 300);
+        passwordDialog.setSize(550, isNewUser ? 450 : 350);
         passwordDialog.setLocationRelativeTo(null);
         passwordDialog.setResizable(false);
         
-        // Hovedpanel med gradient baggrund
+        // Moderne hovedpanel med avanceret gradient og animationer
         JPanel mainPanel = new JPanel(new BorderLayout()) {
+            private float animationProgress = 0f;
+            private javax.swing.Timer animationTimer;
+            
+            {
+                // Start fade-in animation
+                animationTimer = new javax.swing.Timer(16, e -> {
+                    animationProgress += 0.03f;
+                    if (animationProgress >= 1f) {
+                        animationProgress = 1f;
+                        animationTimer.stop();
+                    }
+                    repaint();
+                });
+                animationTimer.start();
+            }
+            
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
+                Graphics2D g2d = (Graphics2D) g.create();
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                 
-                // Gradient baggrund fra lys blå til hvid
-                GradientPaint gradient = new GradientPaint(
-                    0, 0, new Color(240, 248, 255), // Alice Blue
-                    0, getHeight(), new Color(255, 255, 255) // White
-                );
+                int width = getWidth();
+                int height = getHeight();
+                
+                // Animeret gradient baggrund
+                Color startColor = new Color(45, 55, 72, (int)(255 * animationProgress));
+                Color midColor = new Color(74, 85, 104, (int)(255 * animationProgress));  
+                Color endColor = new Color(26, 32, 44, (int)(255 * animationProgress));
+                
+                // Multi-stop gradient
+                float[] fractions = {0f, 0.5f, 1f};
+                Color[] colors = {startColor, midColor, endColor};
+                LinearGradientPaint gradient = new LinearGradientPaint(0, 0, 0, height, fractions, colors);
                 g2d.setPaint(gradient);
-                g2d.fillRect(0, 0, getWidth(), getHeight());
+                g2d.fillRoundRect(0, 0, width, height, 20, 20);
+                
+                // Lysende kant-effekt
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f * animationProgress));
+                g2d.setColor(isNewUser ? new Color(34, 197, 94) : new Color(59, 130, 246));
+                g2d.setStroke(new BasicStroke(3));
+                g2d.drawRoundRect(2, 2, width-4, height-4, 18, 18);
+                
+                // Indre glow
+                g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f * animationProgress));
+                g2d.setStroke(new BasicStroke(1));
+                g2d.drawRoundRect(4, 4, width-8, height-8, 16, 16);
+                
+                g2d.dispose();
             }
         };
-        mainPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(13, 110, 253), 3),
-            BorderFactory.createEmptyBorder(25, 25, 25, 25)
-        ));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
         
-        // Titel
-        String titleText = isNewUser ? "🔐 Opret Master Password" : "🏠 Velkommen Tilbage!";
+        // Moderne titel med glow effekt
+        String titleText = isNewUser ? "✨ Opret Master Password" : "� Velkommen Tilbage!";
         JLabel titleLabel = new JLabel(titleText, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(isNewUser ? new Color(25, 135, 84) : new Color(13, 110, 253));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 10, 0));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         
-        // Undertitel for velkomst besked
+        // Pænere undertitel
         if (!isNewUser) {
-            JLabel subtitleLabel = new JLabel("Indtast dit password for at få adgang til dine notes", SwingConstants.CENTER);
-            subtitleLabel.setFont(new Font("Arial", Font.ITALIC, 14));
-            subtitleLabel.setForeground(new Color(108, 117, 125));
-            subtitleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+            JLabel subtitleLabel = new JLabel("[SECURE] Indtast dit sikre password for at faa adgang til dine krypterede noter", SwingConstants.CENTER);
+            subtitleLabel.setFont(new Font("Segoe UI", Font.ITALIC, 15));
+            subtitleLabel.setForeground(new Color(200, 210, 220));
+            subtitleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 25, 0));
             
             JPanel titlePanel = new JPanel();
             titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
@@ -106,7 +142,7 @@ public class NotesApp {
         centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
         
         // Password felt 1 - ALTID synligt
-        JLabel passwordLabel = new JLabel(isNewUser ? "🔑 Vælg dit sikre password:" : "🔑 Dit password:");
+        JLabel passwordLabel = new JLabel(isNewUser ? "[KEY] Vaelg dit sikre password:" : "[KEY] Dit password:");
         passwordLabel.setFont(new Font("Arial", Font.BOLD, 15));
         passwordLabel.setForeground(new Color(52, 58, 64));
         passwordLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -118,8 +154,8 @@ public class NotesApp {
         passwordField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         passwordField.setPreferredSize(new Dimension(320, 40));
         passwordField.setMaximumSize(new Dimension(320, 40));
-        passwordField.setBackground(new Color(248, 249, 250));
-        passwordField.setForeground(new Color(33, 37, 41));
+        passwordField.setBackground(new Color(64, 68, 75));
+        passwordField.setForeground(Color.WHITE);
         passwordField.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(13, 110, 253), 2),
             BorderFactory.createEmptyBorder(8, 15, 8, 15)
@@ -133,9 +169,9 @@ public class NotesApp {
         if (isNewUser) {
             centerPanel.add(Box.createVerticalStrut(15));
             
-            JLabel confirmLabel = new JLabel("✅ Bekræft dit password:");
-            confirmLabel.setFont(new Font("Arial", Font.BOLD, 15));
-            confirmLabel.setForeground(new Color(52, 58, 64));
+            JLabel confirmLabel = new JLabel("[CHECK] Bekraeft dit password:");
+            confirmLabel.setFont(new Font("Segoe UI", Font.BOLD, 15));
+            confirmLabel.setForeground(Color.WHITE);
             confirmLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             centerPanel.add(confirmLabel);
             
@@ -145,8 +181,8 @@ public class NotesApp {
             confirmField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
             confirmField.setPreferredSize(new Dimension(320, 40));
             confirmField.setMaximumSize(new Dimension(320, 40));
-            confirmField.setBackground(new Color(248, 249, 250));
-            confirmField.setForeground(new Color(33, 37, 41));
+            confirmField.setBackground(new Color(64, 68, 75));
+            confirmField.setForeground(Color.WHITE);
             confirmField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(25, 135, 84), 2),
                 BorderFactory.createEmptyBorder(8, 15, 8, 15)
@@ -163,7 +199,7 @@ public class NotesApp {
         buttonPanel.setOpaque(false);
         
         // OK knap med gradient og ikoner
-        JButton okButton = new JButton(isNewUser ? "🔐 Opret Password" : "🚀 Log Ind");
+        JButton okButton = new JButton(isNewUser ? "[LOCK] Opret Password" : "[GO] Log Ind");
         okButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         okButton.setBackground(isNewUser ? new Color(25, 135, 84) : new Color(13, 110, 253));
         okButton.setForeground(Color.WHITE);
@@ -173,7 +209,7 @@ public class NotesApp {
         okButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         // Cancel knap
-        JButton cancelButton = new JButton("❌ Annuller");
+        JButton cancelButton = new JButton("[X] Annuller");
         cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         cancelButton.setBackground(new Color(220, 53, 69));
         cancelButton.setForeground(Color.WHITE);
